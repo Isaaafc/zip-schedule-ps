@@ -14,7 +14,7 @@ path/to/src/dir/2,path/to/tar/dir/2
 
 The script delimits the text file using commas, so make sure there are no commas in your paths.
 
-Download 7za standalone version (not the installed version) here https://www.7-zip.org/download.html and put the 7za.exe in the same folder as the script.
+[Optional] Download 7za standalone version (not the installed version) here https://www.7-zip.org/download.html and put the 7za.exe in the same folder as the script. (If 7za.exe is not found in the project folder the built-in .zip format will be used, and no testing will be performed before deletion).
 
 ### Using the script
 
