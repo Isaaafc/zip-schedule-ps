@@ -22,9 +22,13 @@ function Compress-Files ($srcPath, $tarPath, $delete) {
     }
 
     if ($exists7za) {
+        "7za.exe found. Creating .7z and testing.."
+
         .\7za.exe a $tarPath $srcPath
         .\7za.exe t ($tarPath + ".7z")
     } else {
+        "7za.exe not found. Creating .zip.."
+        
         Compress-Archive -Path $srcPath -DestinationPath $tarPath -CompressionLevel Optimal
     }
     
