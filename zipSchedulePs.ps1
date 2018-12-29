@@ -10,6 +10,31 @@ function Is-Numeric ($Value) {
     return $Value -match "^\d{8}$"
 }
 
+function Compress-Files ($srcPath, $tarPath, $delete) {    
+    $lastexitcode = 0
+
+    $exists7za = Test-Path .\7za.exe
+
+    $tarParent = Split-Path $tarPath -Parent
+
+    if (!(Test-Path $tarParent)) {
+        md $tarParent
+    }
+
+    if ($exists7za) {
+        .\7za.exe a $tarPath $srcPath
+        .\7za.exe t ($tarPath + ".7z")
+    } else {
+        Compress-Archive -Path $srcPath -DestinationPath $tarPath -CompressionLevel Optimal
+    }
+    
+    if (($delete) -and ($lastexitcode -eq 0)) {
+        "Deleting source.."
+
+        Remove-Item $srcPath -Force -Recurse
+    }
+}
+
 cd $PSScriptRoot
 
 $list = Get-Content .\directories.txt
@@ -25,15 +50,7 @@ foreach ($line in $list) {
             $tarPath = Join-Path -Path $tar -ChildPath $_.Name
             $srcPath = Join-Path -Path $src -ChildPath $_.Name
 
-            .\7za.exe a $tarPath $srcPath
-            .\7za.exe t ($tarPath + ".7z")
-
-            
-            if (($delete) -and ($lastexitcode -eq 0)) {
-                "Deleting source.."
-
-                Remove-Item $srcPath -Force -Recurse
-            }
+            Compress-Files $srcPath $tarPath $delete
         }
     } else {
         $grpLen = 6
@@ -61,14 +78,7 @@ foreach ($line in $list) {
 
             $srcPath = Join-Path -Path $src -ChildPath ($_.Name + "*")
 
-            .\7za.exe a $tarPath $srcPath
-            .\7za.exe t ($tarPath + ".7z")
-
-            if (($delete) -and ($lastexitcode -eq 0)) {
-                "Deleting source.."
-
-                Remove-Item $srcPath -Force -Recurse
-            }
+            Compress-Files $srcPath $tarPath $delete
         }
     }
 }
